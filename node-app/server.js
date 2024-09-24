@@ -30,16 +30,23 @@ db.connect((err) => {
 
 // API endpoint to get all blog posts
 app.get('/api/getBlogs', (req, res) => {
-    const query = 'SELECT * FROM Blog'; // Adjust this to your table name
+    const query = `
+        SELECT Blog.title, Blog.content, Author.name AS author_name, Author.surname AS author_surname
+        FROM Blog
+        JOIN Author ON Blog.author_id = Author.id
+    `;
+
     db.query(query, (err, results) => {
         if (err) {
             console.error(err);
             res.status(500).json({ message: 'Database query error' });
             return;
         }
+        // Send the results as JSON to the frontend
         res.json(results);
     });
 });
+
 
 // API endpoint to add a new blog post
 app.post('/api/addBlog', (req, res) => {
